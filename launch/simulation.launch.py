@@ -81,6 +81,7 @@ def launch_setup(
     include_depth_camera = include_depth_camera_arg.perform(context)
 
     include_pan_tilt = include_pan_tilt_arg.perform(context)
+    arm_tool = LaunchConfiguration("arm_tool").perform(context)
     enable_teleop = enable_teleop_arg.perform(context)
     use_rviz = use_rviz_arg.perform(context)
     launch_map_server = launch_map_server_arg.perform(context)
@@ -252,6 +253,7 @@ def launch_setup(
         "include_wrist_camera": include_wrist_camera,
         "include_depth_camera": include_depth_camera,
         "include_pan_tilt": include_pan_tilt,
+        "arm_tool": arm_tool,
     }
     print("[INFO] Processing URDF with xacro...")
     print(f"[INFO] Xacro arguments: {xacro_args}")
@@ -330,6 +332,12 @@ def launch_setup(
         arguments=["joint_trajectory_controller", "-c", "/controller_manager"],
     )
 
+    gripper_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["gripper_controller", "-c", "/controller_manager"],
+    )
+
     pan_tilt_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
@@ -357,6 +365,10 @@ def launch_setup(
         print("[INFO] - Joint Trajectory Controller (delayed 2s)")
         controller_spawners.append(joint_state_broadcaster_spawner)
         controller_spawners.append(initial_joint_controller_spawner_stopped)
+
+    if arm_tool == "robotiq_2f_85" and robot_arm_type != "":
+        print("[INFO] - Robotiq 2F-85 Gripper Controller (delayed 2s)")
+        controller_spawners.append(gripper_controller_spawner)
 
     if include_pan_tilt == "true":
         print("[INFO] - Pan-Tilt Controller (delayed 2s)")
@@ -466,6 +478,12 @@ def generate_launch_description():
         description="Include front depth camera",
     )
 
+    declare_arm_tool_cmd = DeclareLaunchArgument(
+        "arm_tool",
+        default_value="none",
+        description="End effector on the arm: none or robotiq_2f_85",
+    )
+
     declare_pan_tilt_cmd = DeclareLaunchArgument(
         "include_pan_tilt",
         default_value="true",
@@ -538,6 +556,7 @@ def generate_launch_description():
 
     opq_function = OpaqueFunction(function=launch_setup, args=context_arguments)
 
+    ld.add_action(declare_arm_tool_cmd)
     ld.add_action(opq_function)
 
     return ld
