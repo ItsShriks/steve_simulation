@@ -721,7 +721,7 @@
   </link>
   <!-- base_joint fixes base_link to the environment -->
   <joint name="ur5ebase_joint" type="fixed">
-    <origin rpy="0.0 0.0 -1.5708" xyz="0.133 0.0 0.416"/>
+    <origin rpy="0.0 0.0 1.5708" xyz="0.133 0.0 0.416"/>
     <parent link="cabinet_link"/>
     <child link="ur5ebase_link"/>
   </joint>

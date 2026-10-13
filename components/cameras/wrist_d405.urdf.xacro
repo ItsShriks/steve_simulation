@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
 
-<xacro:macro name="wrist_d405" params="parent use_gazebo">
+<xacro:macro name="wrist_d405" params="parent use_gazebo tilt:=${pi/12}">
 
 <material name="grey">
   <color rgba="0.5 0.5 0.5 1"/>
@@ -39,7 +39,9 @@
   <parent link="wrist_d405_mount"/>
   <child link="wrist_camera_link"/>
   <!-- mount is angled 15° - pi/12 -->
-  <origin xyz="0.079 0.0 0.047" rpy="0.0 ${-pi/2+pi/12} ${pi}"/>
+  <!-- tilt: camera axis vs. the tool axis. D405 bracket (Gazebo): 15 deg; the real wrist D415 looks
+       along the tool axis (measured with the table plane, 2026-09-29: 13.6 deg error with 15 deg) -->
+  <origin xyz="0.079 0.0 0.047" rpy="0.0 ${-pi/2+tilt} ${pi}"/>
 </joint>
 
 <link name="wrist_camera_link">

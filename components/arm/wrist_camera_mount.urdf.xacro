@@ -42,6 +42,12 @@
 
             <!-- Include wrist camera -->
             <xacro:include filename="$(find steve_simulation)/components/cameras/wrist_d405.urdf.xacro"/>
-            <xacro:wrist_d405 parent="dummy_end_effector" use_gazebo="$(arg use_gazebo)"/>
+            <!-- real robot: wrist D415 looks along the tool axis (no bracket tilt) -->
+            <xacro:if value="$(arg use_gazebo)">
+              <xacro:wrist_d405 parent="dummy_end_effector" use_gazebo="$(arg use_gazebo)"/>
+            </xacro:if>
+            <xacro:unless value="$(arg use_gazebo)">
+              <xacro:wrist_d405 parent="dummy_end_effector" use_gazebo="$(arg use_gazebo)" tilt="0.0"/>
+            </xacro:unless>
 
 </robot>

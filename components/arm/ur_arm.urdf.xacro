@@ -43,7 +43,10 @@
                 initial_positions = "${ur_initial_positions}"
                 >
                 <!-- position robot in the world -->
-                <origin xyz="0.133 0.0 0.416" rpy="0.0 0.0 -1.5708" />
+                <!-- yaw +90 deg: checked on the real robot 2026-09-29 (with -90 the arm pointed to the
+                     NEOBOTIX side in RViz / TF while the real arm points away from it, towards
+                     the robot's -x; LiDAR and base frames were correct) -->
+                <origin xyz="0.133 0.0 0.416" rpy="0.0 0.0 1.5708" />
             </xacro:ur_robot>
 
             <!-- If both UR Arm and Simulation is used -->

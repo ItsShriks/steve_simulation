@@ -25,7 +25,7 @@
                 joint_origins_parameters_file="$(arg joint_origin_params_file)"
                 link_inertials_parameters_file="$(arg link_inertials_params_file)"
             >
-                <origin xyz="0.133 0.0 0.416" rpy="0.0 0.0 -1.5708" />
+                <origin xyz="0.133 0.0 0.416" rpy="0.0 0.0 1.5708" />  <!-- +90 deg like ur_arm.urdf.xacro (real mount, checked 2026-09-29) -->
             </xacro:elite_robot>
 
             <!-- If both Elite Arm and Simulation is used -->

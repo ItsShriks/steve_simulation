@@ -11,8 +11,12 @@
     <!--set arm name to include the arm in the simulation-->
     <xacro:arg name="arm_type" default="ur5e"/>
 
-    <!-- Arm tool type: ability_hand or robotiq_gripper; none otherwise -->
-    <xacro:arg name="arm_tool" default="robotiq_gripper"/>
+    <!-- Arm tool: robotiq_2f_85 or none (default none: plain wrist-camera end effector) -->
+    <xacro:arg name="arm_tool" default="none"/>
+    <!-- Gripper ros2_control hardware: auto (gazebo in simulation, none otherwise),
+         gazebo, mock, robotiq_driver or none. See components/gripper/robotiq_2f_85.urdf.xacro -->
+    <xacro:arg name="gripper_hw" default="auto"/>
+    <xacro:arg name="gripper_com_port" default="/tmp/ttyUR"/>
 
     <!-- Wrist camera type: d405_angled, d405_straight; none otherwise -->
     <xacro:arg name="wrist_camera" default=""/>
@@ -67,6 +71,16 @@
             <xacro:include filename="$(find steve_simulation)/components/arm/elite_arm.urdf.xacro"/>
         </xacro:if>
 
+
+        <!-- Robotiq 2F-85 gripper on the UR flange -->
+        <xacro:if value="${'$(arg arm_tool)' == 'robotiq_2f_85' and arm in ['ur5', 'ur10', 'ur5e', 'ur10e']}">
+            <xacro:property name="gripper_hw_arg" value="$(arg gripper_hw)"/>
+            <xacro:include filename="$(find steve_simulation)/components/gripper/robotiq_2f_85.urdf.xacro"/>
+            <xacro:steve_robotiq_2f_85
+                parent="${arm}tool0"
+                gripper_hw="${('gazebo' if '$(arg use_gazebo)'.lower() in ('true', '1') else 'none') if gripper_hw_arg == 'auto' else gripper_hw_arg}"
+                com_port="$(arg gripper_com_port)"/>
+        </xacro:if>
 
         <!-- Wrist camera is now integrated into ur_arm assembly (with dummy end-effector) -->
         <!-- <xacro:if value="$(arg include_wrist_camera)">

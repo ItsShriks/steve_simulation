@@ -30,6 +30,10 @@ controller_manager:
     pan_tilt_controller:
       type: joint_trajectory_controller/JointTrajectoryController
 
+    # Robotiq 2F-85 (only spawned with arm_tool:=robotiq_2f_85)
+    gripper_controller:
+      type: position_controllers/GripperActionController
+
 
 speed_scaling_state_broadcaster:
   ros__parameters:
@@ -159,3 +163,11 @@ gazebo_ros2_control:
       ur5ewrist_1_joint: {p: 5000.0, i: 50.0, d: 100.0}
       ur5ewrist_2_joint: {p: 5000.0, i: 50.0, d: 100.0}
       ur5ewrist_3_joint: {p: 2000.0, i: 20.0, d: 50.0}
+
+gripper_controller:
+  ros__parameters:
+    joint: robotiq_85_left_knuckle_joint   # 0.0 open ... 0.8 closed
+    goal_tolerance: 0.01
+    allow_stalling: true                   # report success when blocked by a grasped object
+    stall_timeout: 1.0
+    stall_velocity_threshold: 0.001

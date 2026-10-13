@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:macro name="dynamixel_bracket_dynamixel_bracket_FR12_H101" params="parent name *origin">
+  <xacro:macro name="dynamixel_bracket_dynamixel_bracket_FR12_H101" params="parent name *origin visual_xyz:='0 0 0' visual_rpy:='0 0 0'">
 
     <joint name="${name}_joint" type="fixed" >
       <xacro:insert_block name="origin" />
@@ -17,14 +17,14 @@
       </inertial>
 
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 0" />
+        <origin xyz="${visual_xyz}" rpy="${visual_rpy}" />
         <geometry>
           <mesh filename="package://steve_simulation/robots/mmo_700/meshes/cameras/dynamixel/dynamixel_bracket_fr12_h101.dae" scale="0.001 0.001 0.001" />
         </geometry>
       </visual>
 
       <collision>
-        <origin xyz="0 0 0" rpy="0 0 0" />
+        <origin xyz="${visual_xyz}" rpy="${visual_rpy}" />
         <geometry>
           <mesh filename="package://steve_simulation/robots/mmo_700/meshes/cameras/dynamixel/dynamixel_bracket_fr12_h101_convex_hull.dae" scale="0.001 0.001 0.001" />
         </geometry>
