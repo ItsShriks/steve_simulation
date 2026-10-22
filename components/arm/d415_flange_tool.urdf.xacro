@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<!-- Camera-only end effector (arm_tool:=camera, the real robot since 2026-10-14): a RealSense D415 held on
+     a short post under a square plate on the UR flange, the lenses looking along the flange axis
+     (photos IMG_2033 / IMG_2034). Only the geometry (RViz / MoveIt / collision) is described here:
+     the camera's optical frames come from its eye-in-hand calibration, published by
+     steve_wbc/launch/gripper_camera.launch.py (ur5etool0 -> gripper_camera_color_optical_frame,
+     steve_wbc/config/gripper_camera.yaml: colour optical frame 4.8 cm out, 3.7 cm off the axis).
+     Same tool as steve_grasping's MuJoCo model models/camera_only/d415_on_flange.xml (WBC).
+
+     Frames:  <parent> (= ur5etool0, z out of the flange)
+                -> d415_tool_plate -> d415_tool_post -> d415_tool_camera (housing centre)
+                -> d415_tool_pinch: the WBC's virtual grasp point, 14.9 cm beyond the flange -->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="steve_d415_flange_tool" params="parent">
+
+    <material name="d415_tool_black">
+      <color rgba="0.08 0.08 0.08 1"/>
+    </material>
+    <material name="d415_tool_silver">
+      <color rgba="0.82 0.82 0.84 1"/>
+    </material>
+
+    <!-- square mounting plate on the flange (~6 x 6 cm, 6 mm) -->
+    <joint name="d415_tool_plate_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="d415_tool_plate"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+    <link name="d415_tool_plate">
+      <visual>
+        <origin xyz="0 0 0.003" rpy="0 0 0"/>
+        <geometry><box size="0.06 0.06 0.006"/></geometry>
+        <material name="d415_tool_black"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0.003" rpy="0 0 0"/>
+        <geometry><box size="0.06 0.06 0.006"/></geometry>
+      </collision>
+      <inertial>
+        <origin xyz="0 0 0.003" rpy="0 0 0"/>
+        <mass value="0.05"/>
+        <inertia ixx="1e-5" ixy="0" ixz="0" iyy="1e-5" iyz="0" izz="2e-5"/>
+      </inertial>
+    </link>
+
+    <!-- short post on the flange axis -->
+    <joint name="d415_tool_post_joint" type="fixed">
+      <parent link="d415_tool_plate"/>
+      <child link="d415_tool_post"/>
+      <origin xyz="0 0 0.006" rpy="0 0 0"/>
+    </joint>
+    <link name="d415_tool_post">
+      <visual>
+        <origin xyz="0 0 0.011" rpy="0 0 0"/>
+        <geometry><cylinder radius="0.008" length="0.022"/></geometry>
+        <material name="d415_tool_black"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0.011" rpy="0 0 0"/>
+        <geometry><cylinder radius="0.008" length="0.022"/></geometry>
+      </collision>
+      <inertial>
+        <origin xyz="0 0 0.011" rpy="0 0 0"/>
+        <mass value="0.02"/>
+        <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+      </inertial>
+    </link>
+
+    <!-- D415 housing 99 x 23 x 20 mm, centred on the post, long side along the tool x axis (the colour
+         camera, 3.7 cm off the axis, is at one end), lenses at the far face looking along +z -->
+    <joint name="d415_tool_camera_joint" type="fixed">
+      <parent link="d415_tool_post"/>
+      <child link="d415_tool_camera"/>
+      <origin xyz="0 0 0.032" rpy="0 0 0"/>
+    </joint>
+    <link name="d415_tool_camera">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry><box size="0.099 0.023 0.020"/></geometry>
+        <material name="d415_tool_silver"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry><box size="0.099 0.023 0.020"/></geometry>
+      </collision>
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.072"/>
+        <inertia ixx="4e-6" ixy="0" ixz="0" iyy="6e-5" iyz="0" izz="6e-5"/>
+      </inertial>
+    </link>
+
+    <!-- the WBC's grasp point (steve_grasping config/tools/camera_only.yaml `pinch`): where the Robotiq's
+         pinch point was, so poses stay comparable; z = approach, y = closing axis -->
+    <joint name="d415_tool_pinch_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="d415_tool_pinch"/>
+      <origin xyz="0 0 0.1488" rpy="0 0 -1.5708"/>
+    </joint>
+    <link name="d415_tool_pinch"/>
+
+  </xacro:macro>
+</robot>

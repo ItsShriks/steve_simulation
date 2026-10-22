@@ -11,7 +11,8 @@
     <!--set arm name to include the arm in the simulation-->
     <xacro:arg name="arm_type" default="ur5e"/>
 
-    <!-- Arm tool: robotiq_2f_85 or none (default none: plain wrist-camera end effector) -->
+    <!-- Arm tool: robotiq_2f_85 | camera (the D415 on a post under the flange, the real robot's tool; the
+         real bringup's default) | none (default: dummy end effector with the D405 wrist camera) -->
     <xacro:arg name="arm_tool" default="none"/>
     <!-- Gripper ros2_control hardware: auto (gazebo in simulation, none otherwise),
          gazebo, mock, robotiq_driver or none. See components/gripper/robotiq_2f_85.urdf.xacro -->
@@ -80,6 +81,13 @@
                 parent="${arm}tool0"
                 gripper_hw="${('gazebo' if '$(arg use_gazebo)'.lower() in ('true', '1') else 'none') if gripper_hw_arg == 'auto' else gripper_hw_arg}"
                 com_port="$(arg gripper_com_port)"/>
+        </xacro:if>
+
+        <!-- Camera only: D415 on a short post under the flange (photos IMG_2033 / IMG_2034); its optical
+             frames come from the calibration TF (steve_wbc gripper_camera.launch.py) -->
+        <xacro:if value="${'$(arg arm_tool)' == 'camera' and arm in ['ur5', 'ur10', 'ur5e', 'ur10e']}">
+            <xacro:include filename="$(find steve_simulation)/components/arm/d415_flange_tool.urdf.xacro"/>
+            <xacro:steve_d415_flange_tool parent="${arm}tool0"/>
         </xacro:if>
 
         <!-- Wrist camera is now integrated into ur_arm assembly (with dummy end-effector) -->
