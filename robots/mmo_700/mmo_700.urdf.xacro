@@ -90,6 +90,13 @@
             <xacro:steve_d415_flange_tool parent="${arm}tool0"/>
         </xacro:if>
 
+        <!-- Ability Hand on the flange, D415 on the wrist collar beside the palm (steve_grasping tool ability_hand);
+             its optical frames come from the calibration TF (steve_wbc gripper_camera.launch.py mount:=ability_hand) -->
+        <xacro:if value="${'$(arg arm_tool)' == 'ability_hand' and arm in ['ur5', 'ur10', 'ur5e', 'ur10e']}">
+            <xacro:include filename="$(find steve_simulation)/components/arm/ability_hand_tool.urdf.xacro"/>
+            <xacro:steve_ability_hand_tool parent="${arm}tool0"/>
+        </xacro:if>
+
         <!-- Wrist camera is now integrated into ur_arm assembly (with dummy end-effector) -->
         <!-- <xacro:if value="$(arg include_wrist_camera)">
             <xacro:include filename="$(find steve_simulation)/components/cameras/wrist_d405.urdf.xacro"/>
