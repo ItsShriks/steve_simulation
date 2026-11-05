@@ -1,19 +1,19 @@
 <?xml version="1.0"?>
 <!-- Ability Hand end effector (arm_tool:=ability_hand, the real robot since 2026-11-04): the PSYONIC Ability Hand
-     (right, large) coaxial on the UR flange, the 3D-printed wrist collar (steve_grasping hardware/hand_camera_mount)
-     and the RealSense D415 on the collar's arm BESIDE THE PALM. Simple shapes only (RViz / MoveIt / collision), so
+     (right, large) coaxial on the UR flange and the RealSense D435i on the wrist ring at the flange, on the palm side,
+     looking along the fingers (mounted 2026-11-05). Simple shapes only (RViz / MoveIt / collision), so
      this package does not need steve_grasping's meshes. The WBC uses its own MuJoCo model of the same tool
      (steve_grasping config/tools/ability_hand.yaml): keep the numbers below in step with that file's mount, pinch
      and camera sections. The camera's optical frames come from steve_wbc gripper_camera.launch.py (mount:=ability_hand:
      its calibration, else the same nominal pose as here) — this file only places the housing.
 
      Frames:  <parent> (= ur5etool0, z out of the flange)
-                -> ability_hand_collar (collar, its camera arm and electronics tray)
+                -> ability_hand_collar (the camera's plate on the wrist ring)
                 -> ability_hand_base (wrist flange face of the hand; turned 180 deg about the flange axis:
                    palm towards -y of tool0, fingers along z)
                      -> ability_hand_palm (palm + straight fingers + thumb, the open hand)
                      -> ability_hand_pinch: the WBC's grasp point (object centre of the palm-down wrap)
-                -> ability_hand_d415 (camera housing, nominal pose) -->
+                -> ability_hand_camera (camera housing, nominal pose) -->
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:macro name="steve_ability_hand_tool" params="parent">
@@ -40,20 +40,17 @@
       </collision>
     </xacro:macro>
 
-    <!-- collar around wrist 3 (ability_hand.yaml camera.bracket, boxes in tool0): camera arm, electronics tray -->
+    <!-- the camera's plate on the wrist ring (ability_hand.yaml camera.bracket, boxes in tool0) -->
     <joint name="ability_hand_collar_joint" type="fixed">
       <parent link="${parent}"/>
       <child link="ability_hand_collar"/>
       <origin xyz="0 0 0" rpy="0 0 0"/>
     </joint>
     <link name="ability_hand_collar">
-      <xacro:ah_box xyz="0 -0.0585 0.0025" size="0.040 0.033 0.035" material="ability_hand_black"/>
-      <xacro:ah_box xyz="0 -0.0850 0.0200" size="0.050 0.020 0.030" material="ability_hand_black"/>
-      <xacro:ah_box xyz="0 0.0545 0.0225" size="0.074 0.009 0.071" material="ability_hand_black"/>
-      <xacro:ah_box xyz="0 0.0615 0.0250" size="0.074 0.014 0.046" material="ability_hand_grey"/>
+      <xacro:ah_box xyz="0 -0.039 -0.005" size="0.050 0.008 0.030" material="ability_hand_black"/>
       <inertial>
         <origin xyz="0 0 0.01" rpy="0 0 0"/>
-        <mass value="0.12"/>
+        <mass value="0.03"/>
         <inertia ixx="1e-4" ixy="0" ixz="0" iyy="1e-4" iyz="0" izz="1e-4"/>
       </inertial>
     </link>
@@ -106,25 +103,25 @@
     </joint>
     <link name="ability_hand_pinch"/>
 
-    <!-- D415 housing at the collar's nominal camera pose (ability_hand.yaml camera: colour optical frame in tool0,
-         housing offset in that frame). Not an optical frame: those come from gripper_camera.launch.py -->
-    <joint name="ability_hand_d415_joint" type="fixed">
+    <!-- D435i housing at the camera's nominal pose (ability_hand.yaml camera: colour optical frame in tool0, housing
+         offset in that frame). Not an optical frame: those come from gripper_camera.launch.py -->
+    <joint name="ability_hand_camera_joint" type="fixed">
       <parent link="${parent}"/>
-      <child link="ability_hand_d415"/>
-      <origin xyz="0.0325 -0.1064 0.0457" rpy="${radians(-40)} 0 ${pi}"/>
+      <child link="ability_hand_camera"/>
+      <origin xyz="-0.030 -0.055 0.005" rpy="0 0 0"/>
     </joint>
-    <link name="ability_hand_d415">
+    <link name="ability_hand_camera">
       <visual>
-        <origin xyz="0.0325 0 -0.010" rpy="0 0 0"/>
-        <geometry><box size="0.099 0.023 0.020"/></geometry>
+        <origin xyz="0.030 0 -0.0125" rpy="0 0 0"/>
+        <geometry><box size="0.090 0.025 0.025"/></geometry>
         <material name="ability_hand_silver"/>
       </visual>
       <collision>
-        <origin xyz="0.0325 0 -0.010" rpy="0 0 0"/>
-        <geometry><box size="0.099 0.023 0.020"/></geometry>
+        <origin xyz="0.030 0 -0.0125" rpy="0 0 0"/>
+        <geometry><box size="0.090 0.025 0.025"/></geometry>
       </collision>
       <inertial>
-        <origin xyz="0.0325 0 -0.010" rpy="0 0 0"/>
+        <origin xyz="0.030 0 -0.0125" rpy="0 0 0"/>
         <mass value="0.072"/>
         <inertia ixx="4e-6" ixy="0" ixz="0" iyy="6e-5" iyz="0" izz="6e-5"/>
       </inertial>
