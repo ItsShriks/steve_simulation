@@ -9,8 +9,7 @@
 
      Frames:  <parent> (= ur5etool0, z out of the flange)
                 -> ability_hand_collar (the camera's plate on the wrist ring)
-                -> ability_hand_base (wrist flange face of the hand; turned 180 deg about the flange axis:
-                   palm towards -y of tool0, fingers along z)
+                -> ability_hand_base (wrist flange face of the hand: palm towards +y of tool0, fingers along z)
                      -> ability_hand_palm (palm + straight fingers + thumb, the open hand)
                      -> ability_hand_pinch: the WBC's grasp point (object centre of the palm-down wrap)
                 -> ability_hand_camera (camera housing, nominal pose) -->
@@ -47,7 +46,7 @@
       <origin xyz="0 0 0" rpy="0 0 0"/>
     </joint>
     <link name="ability_hand_collar">
-      <xacro:ah_box xyz="0 -0.039 -0.005" size="0.050 0.008 0.030" material="ability_hand_black"/>
+      <xacro:ah_box xyz="0 0.031 0.020" size="0.050 0.008 0.030" material="ability_hand_black"/>
       <inertial>
         <origin xyz="0 0 0.01" rpy="0 0 0"/>
         <mass value="0.03"/>
@@ -55,11 +54,11 @@
       </inertial>
     </link>
 
-    <!-- hand base: straight on the flange, turned 180 deg about it (ability_hand.yaml mount) -->
+    <!-- hand base: 1.5 cm out on its adapter ring, palm towards +y of tool0 (ability_hand.yaml mount, checked 2026-11-05) -->
     <joint name="ability_hand_base_joint" type="fixed">
       <parent link="${parent}"/>
       <child link="ability_hand_base"/>
-      <origin xyz="0 0 0" rpy="0 0 ${pi}"/>
+      <origin xyz="0 0 0.015" rpy="0 0 0"/>
     </joint>
     <link name="ability_hand_base">
       <visual>
@@ -108,7 +107,7 @@
     <joint name="ability_hand_camera_joint" type="fixed">
       <parent link="${parent}"/>
       <child link="ability_hand_camera"/>
-      <origin xyz="-0.030 -0.055 0.005" rpy="0 0 0"/>
+      <origin xyz="-0.04504 0.04781 0.03224" rpy="${radians(-19.44)} ${radians(1.53)} ${radians(-0.80)}"/>
     </joint>
     <link name="ability_hand_camera">
       <visual>
