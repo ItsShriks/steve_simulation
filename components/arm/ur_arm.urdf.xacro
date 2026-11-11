@@ -63,11 +63,12 @@
                 </gazebo>
             </xacro:if>
 
-            <!-- include wrist camera mount (dummy end-effector with camera) — not with arm_tool:=camera / ability_hand,
-                 where the D415 on its post / the hand with the D415 on its collar is the end effector
-                 (mmo_700.urdf.xacro, components/arm/d415_flange_tool.urdf.xacro, ability_hand_tool.urdf.xacro) -->
+            <!-- include wrist camera mount (dummy end-effector with camera) — not with arm_tool:=camera / ability_hand /
+                 robotiq_2f_85, which carry their own camera (the D415 on its post, the D435i on the hand's wrist ring /
+                 on the 2F-85's DROID mount: mmo_700.urdf.xacro, components/arm/d415_flange_tool.urdf.xacro,
+                 ability_hand_tool.urdf.xacro, components/gripper/robotiq_2f_85.urdf.xacro) -->
             <xacro:arg name="arm_tool" default="none"/>
-            <xacro:unless value="${'$(arg arm_tool)' in ['camera', 'ability_hand']}">
+            <xacro:unless value="${'$(arg arm_tool)' in ['camera', 'ability_hand', 'robotiq_2f_85']}">
                 <xacro:include filename="$(find steve_simulation)/components/arm/wrist_camera_mount.urdf.xacro"/>
             </xacro:unless>
 

@@ -6,7 +6,10 @@
   robotiq_description/urdf/robotiq_2f_85_macro.urdf.xacro, BSD-3-Clause); meshes are
   used from the installed robotiq_description package. Kept local so that the
   robot does not depend on the macro signature of a particular robotiq_description
-  release. Mounting (UR-to-Robotiq adapter, 11 mm) as on the real robot.
+  release. Mounting (UR-to-Robotiq adapter, 11 mm) as on the real robot, on the DROID D435i wrist mount's 7 mm plate
+  (since 2026-11-11; steve_grasping config/tools/robotiq_2f85.yaml `camera:`): the mount as boxes and the D435i housing
+  at its design pose; the camera's optical frames come from steve_wbc gripper_camera.launch.py (mount:=robotiq_2f85,
+  calibration file or this design pose).
 
   gripper_hw:
     gazebo          gazebo_ros2_control/GazeboSystem (mimic joints driven by the plugin)
@@ -20,11 +23,46 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
     <xacro:macro name="steve_robotiq_2f_85" params="parent gripper_hw:=none com_port:=/tmp/ttyUR">
 
-        <!-- UR flange (tool0) -> adapter plate -> gripper -->
+        <!-- UR flange (tool0) -> DROID camera mount plate (7 mm) -> adapter plate -> gripper -->
+        <material name="droid_mount_black"><color rgba="0.12 0.12 0.12 1.0"/></material>
+        <material name="d435i_silver"><color rgba="0.75 0.75 0.78 1.0"/></material>
+        <xacro:macro name="droid_box" params="xyz size">
+            <visual><origin xyz="${xyz}" rpy="0 0 0"/><geometry><box size="${size}"/></geometry>
+                <material name="droid_mount_black"/></visual>
+            <collision><origin xyz="${xyz}" rpy="0 0 0"/><geometry><box size="${size}"/></geometry></collision>
+        </xacro:macro>
+        <joint name="droid_camera_mount_joint" type="fixed">
+            <parent link="${parent}" />
+            <child link="droid_camera_mount" />
+            <origin xyz="0 0 0" rpy="0 0 0" />
+        </joint>
+        <link name="droid_camera_mount">
+            <!-- robotiq_2f85.yaml camera.bracket (boxes in tool0): plate on the flange, arm, the camera's plate -->
+            <xacro:droid_box xyz="0 0 0.002" size="0.075 0.075 0.010"/>
+            <xacro:droid_box xyz="-0.0063 -0.0651 -0.0064" size="0.064 0.034 0.019"/>
+            <xacro:droid_box xyz="-0.0063 -0.0959 -0.0137" size="0.064 0.027 0.015"/>
+            <inertial><mass value="0.05"/><origin xyz="0 -0.04 0"/>
+                <inertia ixx="1e-5" ixy="0" ixz="0" iyy="1e-5" iyz="0" izz="1e-5"/></inertial>
+        </link>
+        <!-- D435i housing at the camera's design pose (colour optical frame in tool0, housing offset in that frame).
+             Not an optical frame: those come from gripper_camera.launch.py -->
+        <joint name="droid_d435i_joint" type="fixed">
+            <parent link="${parent}" />
+            <child link="droid_d435i" />
+            <origin xyz="-0.0388 -0.0876 0.0105" rpy="${radians(-21.30)} 0 0" />
+        </joint>
+        <link name="droid_d435i">
+            <visual><origin xyz="0.0325 0 -0.010" rpy="0 0 0"/><geometry><box size="0.090 0.025 0.025"/></geometry>
+                <material name="d435i_silver"/></visual>
+            <collision><origin xyz="0.0325 0 -0.010" rpy="0 0 0"/><geometry><box size="0.090 0.025 0.025"/></geometry>
+            </collision>
+            <inertial><mass value="0.072"/><origin xyz="0.0325 0 -0.010"/>
+                <inertia ixx="1e-5" ixy="0" ixz="0" iyy="1e-5" iyz="0" izz="1e-5"/></inertial>
+        </link>
         <joint name="ur_to_robotiq_joint" type="fixed">
             <parent link="${parent}" />
             <child link="ur_to_robotiq_link" />
-            <origin xyz="0 0 0" rpy="0 0 1.5707963267948966" />
+            <origin xyz="0 0 0.007" rpy="0 0 1.5707963267948966" />
         </joint>
         <link name="ur_to_robotiq_link">
             <visual>
