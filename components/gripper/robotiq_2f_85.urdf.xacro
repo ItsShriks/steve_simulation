@@ -49,7 +49,9 @@
         <joint name="droid_d435i_joint" type="fixed">
             <parent link="${parent}" />
             <child link="droid_d435i" />
-            <origin xyz="-0.0388 -0.0876 0.0105" rpy="${radians(-21.30)} 0 0" />
+            <!-- calibrated 2026-11-11 (steve_wbc config/gripper_camera_robotiq_2f85.yaml), was the STL design pose
+                 xyz -0.0388 -0.0876 0.0105 rpy -21.3 0 0 deg -->
+            <origin xyz="-0.03957 -0.08518 0.01142" rpy="${radians(-20.17)} ${radians(-2.13)} ${radians(-1.31)}" />
         </joint>
         <link name="droid_d435i">
             <visual><origin xyz="0.0325 0 -0.010" rpy="0 0 0"/><geometry><box size="0.090 0.025 0.025"/></geometry>
