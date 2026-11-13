@@ -69,6 +69,14 @@ The simulation uses a plugin to simulate the RealSense L515.
 
 ---
 
+## Contributors & Acknowledgments
+
+This project is developed at the **Humanoid Robots Lab (HRL)**, University of Bonn.
+
+- **Shrikar Nakhye** - [GitHub](https://github.com/Itsshriks) | [Email](mailto:nakhyeshrikar@icloud.com)
+
+Based on the Neobotix ROS 2 package by **Pradheep Krishna** (Neobotix GmbH).
+
 ### Acknowledgements
 - **Rohit Menon** - For mentorship and technical guidance on Neobotix platforms.
 - **Prof. Maren Bennewitz** - Head of the Humanoid Robots Lab, University of Bonn.
